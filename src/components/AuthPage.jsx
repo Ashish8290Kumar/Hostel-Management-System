@@ -196,8 +196,8 @@ export default function AuthPage({
                         }`}
                     />
                   </div>
-                  
-                                   {/* ====== PASSWORDS KA CHUNK CORRECTION ====== */}
+
+                  {/* ====== PASSWORDS KA CHUNK CORRECTION ====== */}
                   <div>
                     <label
                       className={`block text-xs font-bold uppercase tracking-wider mb-1 ${isDark ? "text-slate-400" : "text-slate-600"
@@ -370,7 +370,7 @@ export default function AuthPage({
 
                   </div>
 
-                                    {/* ====== PHONE NUMBER FIELD ====== */}
+                  {/* ====== PHONE NUMBER FIELD ====== */}
                   <div>
                     <label
                       className={`block text-xs font-bold uppercase tracking-wider mb-1 ${isDark ? "text-slate-400" : "text-slate-600"
@@ -396,6 +396,34 @@ export default function AuthPage({
                         }`}
                     />
                   </div>
+
+                  {/* ================= ROLE SELECTION FIELD ================= */}
+                  <div>
+                    <label
+                      className={`block text-xs font-bold uppercase tracking-wider mb-1 ${isDark ? "text-slate-400" : "text-slate-600"}`}
+                    >
+                      Register As
+                    </label>
+                    <select
+                      required
+                      disabled={busy}
+                      value={registerForm?.role || "STUDENT"}
+                      onChange={(e) =>
+                        setRegisterForm({
+                          ...registerForm,
+                          role: e.target.value,
+                        })
+                      }
+                      className={`w-full rounded-xl border px-4 py-2 text-sm outline-none transition disabled:opacity-50 ${isDark
+                          ? "border-slate-800 bg-slate-950 text-white focus:border-emerald-500"
+                          : "border-slate-200 bg-white text-slate-900 focus:border-slate-950"
+                        }`}
+                    >
+                      <option value="STUDENT">Student</option>
+                      <option value="ADMIN">Admin</option>
+                    </select>
+                  </div>
+
 
                   {/* ================= STUDENT ROLL NUMBER (PERMANENTLY ACTIVE) ================= */}
                   <div>

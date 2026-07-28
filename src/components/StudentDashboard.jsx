@@ -128,7 +128,7 @@ export default function StudentDashboard({ api, session, setToast }) {
     }
   }
 
-
+// Part 2
 
   return (
     <div className="space-y-6 text-slate-900 w-full">
@@ -193,9 +193,8 @@ export default function StudentDashboard({ api, session, setToast }) {
 }
 
 
+// Part 3
 
-
-// Component to render the 3 main dashboard cards (Room Info, Fee Payments, and Account Meta)
 // Component to render the main dashboard cards and installments grid matrix
 function StudentProfileHub({ profile, onPayFee, session }) {
   const isBlocked = profile?.feeStatus === "BLOCKED";
@@ -354,7 +353,7 @@ function StudentProfileHub({ profile, onPayFee, session }) {
 }
 
 
-
+// part 4
 
 
 // 1. Component to display Live Hostel Vacancy Grid List
