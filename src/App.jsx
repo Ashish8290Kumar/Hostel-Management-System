@@ -4,7 +4,9 @@ import Layout from "./components/Layout";
 import AdminDashboard from "./components/AdminDashboard";
 import StudentDashboard from "./components/StudentDashboard";
 
-export const API_BASE = import.meta.env.VITE_API_BASE_URL || "http://localhost:8090";
+
+export const API_BASE = import.meta.env.VITE_API_BASE_URL 
+  || "https://hostel-management-system-backend-o16l.onrender.com";
 
 const initialLogin = { username: "", password: "" };
 const initialRegister = {
@@ -38,28 +40,21 @@ export function formatDate(value) {
   });
 }
 
-// OFFLINE BYPASS SUITE: Network error aur timeout ko bypass karne ke liye offline engine
+// Razorpay mock loader (unchanged)
 export function loadRazorpay() {
   return new Promise((resolve) => {
-    // Agar internet chal raha hai aur window.Razorpay mil gaya toh achhi baat hai
     if (window.Razorpay) {
       resolve(true);
       return;
     }
-
-    // 🚀 OFFLINE SIMULATION: Agar script drop ho gayi, toh local template mock inject karein
     console.log("Network dropped. Injecting local mock payment engine execution hooks...");
-    
     window.Razorpay = function (options) {
       this.options = options;
       this.open = function () {
-        // Automatic alert to simulate payment process window interaction without server lag
         const userAction = window.confirm(
           `💳 LOCAL PAYMENT SIMULATOR:\n\nHostel Allotment Fee Bill: ₹${this.options.amount / 100}\n\nClick 'OK' to simulate SUCCESSFUL transaction hook.\nClick 'Cancel' to drop request.`
         );
-
         if (userAction) {
-          // Trigger the standard callback success loop back to student handler pipeline
           this.options.handler({
             razorpay_order_id: this.options.order_id || "mock_order_id_" + Math.random().toString(36).substr(2, 9),
             razorpay_payment_id: "pay_mock_" + Math.random().toString(36).substr(2, 9),
@@ -70,12 +65,9 @@ export function loadRazorpay() {
         }
       };
     };
-
-    resolve(true); // Forces system to unlock the checkout gateway
+    resolve(true);
   });
 }
-
-
 
 export default function App() {
   const [session, setSession] = useState(() => {
@@ -117,6 +109,7 @@ export default function App() {
     setToast(null);
   }
 
+  // ✅ API helper now uses Render backend URL
   async function api(path, options = {}) {
     const headers = {
       "Content-Type": "application/json",
@@ -166,40 +159,33 @@ export default function App() {
     }
   }
 
-  // UPGRADED LOGIC: System check verification attempts process tracking engine block
-    // UPGRADED LOGIC: Forces every single signup request to become a student safely
   async function handleRegister(event) {
     event.preventDefault();
     setBusy(true);
     setToast(null);
 
     try {
-      // 🚀 FIXED SECURE PACKET: Form data ko copy karke role ko strictly STUDENT force-assign kiya hai
       const securePayload = {
         ...registerForm,
         role: "STUDENT",
-        rollNumber: registerForm.rollNumber // Student roll number data packet assign
+        rollNumber: registerForm.rollNumber
       };
-
-      // Purane admin validation codes aur security keys ko payload se humesha ke liye delete kiya
       delete securePayload.adminSecretKey;
 
       await api("/api/auth/register", {
         method: "POST",
-        body: JSON.stringify(securePayload), // Backend pipeline ko hamesha STUDENT hi travel karega
+        body: JSON.stringify(securePayload),
       });
 
-      // Form clear karke user ko login tab par redirect karein
       setRegisterForm(initialRegister);
       setAuthMode("login");
-      triggerToast("success", "Profile record established successfully into enterprise datastore ledger!");
+      triggerToast("success", "Profile record established successfully!");
     } catch (error) {
       triggerToast("error", error.message);
     } finally {
       setBusy(false);
     }
   }
-
 
   if (!session) {
     return (
