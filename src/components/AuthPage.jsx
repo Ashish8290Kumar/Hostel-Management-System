@@ -24,6 +24,33 @@ export default function AuthPage({
   const [showPassword, setShowPassword] = useState(false);       // login form
   const [showRegPassword, setShowRegPassword] = useState(false); // register form
 
+   //onRegister function 
+  async function onRegister(e) {
+    e.preventDefault();
+    setBusy(true);
+
+    try {
+      const body = {
+        email: registerForm.email,
+        password: registerForm.password,
+        phoneNumber: registerForm.phoneNumber,
+        role: registerForm.role, // 👈 important
+        rollNumber: registerForm.role === "STUDENT" ? registerForm.rollNumber : null
+      };
+
+      await api("/api/auth/register", {
+        method: "POST",
+        body: JSON.stringify(body),
+      });
+
+      setToast({ type: "success", text: "Registration successful!" });
+    } catch (err) {
+      setToast({ type: "error", text: "Registration failed: " + err.message });
+    } finally {
+      setBusy(false);
+    }
+  }
+
 
   return (
     <main
@@ -60,12 +87,6 @@ export default function AuthPage({
             className="w-full h-80 object-cover rounded-2xl shadow-2xl border border-slate-800 opacity-90 hover:opacity-100 transition-opacity duration-300 mb-6 "
           />
 
-          {/* <h1
-            className={`text-3xl font-black tracking-wide ${isDark ? "text-emerald-400" : "text-emerald-600"
-              }`}
-          >
-             🪶 Shanti Hostel
-          </h1> */}
 
           <div className="flex items-center gap-2">
             <img
@@ -415,8 +436,8 @@ export default function AuthPage({
                         })
                       }
                       className={`w-full rounded-xl border px-4 py-2 text-sm outline-none transition disabled:opacity-50 ${isDark
-                          ? "border-slate-800 bg-slate-950 text-white focus:border-emerald-500"
-                          : "border-slate-200 bg-white text-slate-900 focus:border-slate-950"
+                        ? "border-slate-800 bg-slate-950 text-white focus:border-emerald-500"
+                        : "border-slate-200 bg-white text-slate-900 focus:border-slate-950"
                         }`}
                     >
                       <option value="STUDENT">Student</option>
@@ -424,34 +445,36 @@ export default function AuthPage({
                     </select>
                   </div>
 
+                  {/* ================= STUDENT ROLL NUMBER (ONLY FOR STUDENT) ================= */}
+                  {registerForm.role === "STUDENT" && (
+                    <div>
+                      <label
+                        className={`block text-xs font-bold uppercase tracking-wider mb-1 ${isDark ? "text-slate-400" : "text-slate-600"
+                          }`}
+                      >
+                        Roll Number
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        disabled={busy}
+                        placeholder="2026CS101"
+                        value={registerForm?.rollNumber || ""}
+                        onChange={(e) =>
+                          setRegisterForm({
+                            ...registerForm,
+                            rollNumber: e.target.value,
+                            role: "STUDENT" // 🚀 role stays Student when roll number is entered
+                          })
+                        }
+                        className={`w-full rounded-xl border px-4 py-2 text-sm outline-none transition disabled:opacity-50 ${isDark
+                            ? "border-slate-800 bg-slate-950 text-white focus:border-emerald-500"
+                            : "border-slate-200 bg-white text-slate-900 focus:border-slate-950"
+                          }`}
+                      />
+                    </div>
+                  )}
 
-                  {/* ================= STUDENT ROLL NUMBER (PERMANENTLY ACTIVE) ================= */}
-                  <div>
-                    <label
-                      className={`block text-xs font-bold uppercase tracking-wider mb-1 ${isDark ? "text-slate-400" : "text-slate-600"
-                        }`}
-                    >
-                      Roll Number
-                    </label>
-                    <input
-                      type="text"
-                      required
-                      disabled={busy}
-                      placeholder="2026CS101"
-                      value={registerForm?.rollNumber || ""}
-                      onChange={(e) =>
-                        setRegisterForm({
-                          ...registerForm,
-                          rollNumber: e.target.value,
-                          role: "STUDENT" // 🚀 AUTOMATIC ROLE ALLOCATION
-                        })
-                      }
-                      className={`w-full rounded-xl border px-4 py-2 text-sm outline-none transition disabled:opacity-50 ${isDark
-                        ? "border-slate-800 bg-slate-950 text-white focus:border-emerald-500"
-                        : "border-slate-200 bg-white text-slate-900 focus:border-slate-950"
-                        }`}
-                    />
-                  </div>
 
                   {/* ================= SUBMIT BUTTON ================= */}
                   <button
