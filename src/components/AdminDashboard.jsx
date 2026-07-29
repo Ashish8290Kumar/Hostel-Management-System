@@ -655,9 +655,8 @@ export default function AdminDashboard({ api, setToast }) {
                                   <div className="max-h-35 overflow-y-auto pr-1 grid grid-cols-1 gap-2 mb-3 scrollbar-thin">
                                     {st.documents && st.documents.length > 0 ? (
                                       st.documents.map((doc) => {
-                                        // Dynamic file naming structure formatting
+                                        // Dynamic file naming structure formatting 
                                         let cleanName = doc.originalName || doc.fileName || "View Document";
-
                                         if (cleanName.includes(".") && cleanName === doc.fileName) {
                                           cleanName = cleanName.replace(/\.[^/.]+$/, "");
                                           cleanName = cleanName.replace(/^(profiles|receipts|complaints)_/i, "").replace(new RegExp("^" + studentUser + "_", "i"), "");
@@ -666,13 +665,10 @@ export default function AdminDashboard({ api, setToast }) {
                                         cleanName = cleanName.replace(/[_-]/g, " ").trim();
 
                                         return (
-                                          <div
-                                            key={doc.id}
-                                            className="flex items-center justify-between gap-3 p-2.5 rounded-lg border border-slate-200 bg-slate-50/50 hover:border-indigo-300 hover:bg-indigo-50/40 transition group min-w-0 shadow-sm w-full"
-                                            title={cleanName}
-                                          >
+                                          <div key={doc.id} className="flex items-center justify-between gap-3 p-2.5 rounded-lg border border-slate-200 bg-slate-50/50 hover:border-indigo-300 hover:bg-indigo-50/40 transition group min-w-0 shadow-sm w-full" title={cleanName} >
+                                            {/* 🚀 FIXED: Replaced hardcoded http://localhost:8090 with your dynamic API_BASE variable */}
                                             <a
-                                              href={`${API_BASE || "https://hostel-management-system-backend-o16l.onrender.com"}/api/v1/documents/view-by-id/${doc.id}?v=${Date.now()}`}
+                                              href={`${API_BASE || "https://onrender.com"}/api/v1/documents/view-by-id/${doc.id}?v=${Date.now()}`}
                                               target="_blank"
                                               rel="noopener noreferrer"
                                               className="flex items-center gap-2 min-w-0 flex-1"
@@ -686,16 +682,7 @@ export default function AdminDashboard({ api, setToast }) {
                                                 <span className="text-[9px] text-slate-400 font-semibold tracking-wide">View File ↗</span>
                                               </div>
                                             </a>
-
-                                            <button
-                                              type="button"
-                                              disabled={deletingDoc === doc.id}
-                                              onClick={(e) => {
-                                                e.stopPropagation();
-                                                handleDeleteDocument(doc.id);
-                                              }}
-                                              className="shrink-0 text-[10px] text-rose-500 hover:text-rose-700 font-bold px-2 py-1 rounded bg-white border border-slate-200 hover:bg-rose-50 hover:border-rose-300 transition cursor-pointer disabled:opacity-50 h-fit"
-                                            >
+                                            <button type="button" disabled={deletingDoc === doc.id} onClick={(e) => { e.stopPropagation(); handleDeleteDocument(doc.id); }} className="shrink-0 text-[10px] text-rose-500 hover:text-rose-700 font-bold px-2 py-1 rounded bg-white border border-slate-200 hover:bg-rose-50 hover:border-rose-300 transition cursor-pointer disabled:opacity-50 h-fit" >
                                               {deletingDoc === doc.id ? "..." : "Delete"}
                                             </button>
                                           </div>
@@ -710,27 +697,13 @@ export default function AdminDashboard({ api, setToast }) {
                                   </div>
 
                                   {/* Upload Form */}
-                                  <form
-                                    onSubmit={async (e) => {
-                                      e.preventDefault();
-                                      await handleAdminUploadDoc(e, "PROFILES", studentUser);
-                                    }}
-                                    className="pt-2 border-t border-slate-100 flex items-center gap-1.5"
-                                  >
-                                    <input
-                                      type="file"
-                                      required
-                                      className="block text-[10px] text-slate-400 w-full file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border file:border-slate-100 file:text-[10px] file:font-bold file:text-slate-600 file:bg-slate-50 hover:file:bg-slate-100 cursor-pointer"
-                                    />
-                                    <button
-                                      type="submit"
-                                      disabled={uploadingDoc}
-                                      className={`px-2.5 py-1.5 rounded-lg text-[10px] font-bold text-white transition active:scale-[0.95] cursor-pointer ${uploadingDoc ? 'bg-slate-300 cursor-not-allowed' : 'bg-slate-900 hover:bg-slate-800'
-                                        }`}
-                                    >
+                                  <form onSubmit={async (e) => { e.preventDefault(); await handleAdminUploadDoc(e, "PROFILES", studentUser); }} className="pt-2 border-t border-slate-100 flex items-center gap-1.5" >
+                                    <input type="file" required className="block text-[10px] text-slate-400 w-full file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border file:border-slate-100 file:text-[10px] file:font-bold file:text-slate-600 file:bg-slate-50 hover:file:bg-slate-100 cursor-pointer" />
+                                    <button type="submit" disabled={uploadingDoc} className={`px-2.5 py-1.5 rounded-lg text-[10px] font-bold text-white transition active:scale-[0.95] cursor-pointer ${uploadingDoc ? 'bg-slate-300 cursor-not-allowed' : 'bg-slate-900 hover:bg-slate-800'}`} >
                                       {uploadingDoc ? '...' : 'Upload'}
                                     </button>
                                   </form>
+
                                 </div>
                               </div>
                             </td>
