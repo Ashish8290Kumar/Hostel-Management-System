@@ -323,28 +323,48 @@ export default function AdminDashboard({ api, setToast }) {
 
     setUploadingDoc(true);
     try {
-      const token = localStorage.getItem("token") || sessionStorage.getItem("token") || "";
+      // 🚀 FIXED: Fallback to parsing session storage variations safely
+      const token = localStorage.getItem("token")
+        || sessionStorage.getItem("token")
+        || JSON.parse(localStorage.getItem("hostel_session") || "{}")?.jwtToken
+        || "";
 
-      const response = await fetch("http://localhost:8090/api/v1/documents/upload", {
+      // 🚀 FIXED: Removed hardcoded localhost! Now dynamically targets your active render cloud server
+      const targetUrl = `${API_BASE || "https://hostel-management-system-backend-o16l.onrender.com"}/api/v1/documents/upload`;
+
+
+      const response = await fetch(targetUrl, {
         method: "POST",
         headers: token ? { "Authorization": `Bearer ${token}` } : {},
-        body: formData
+        body: formData // Browser safely configures boundaries automatically
       });
 
-      const data = await response.json();
+      // 🚀 FIXED: Safely reads the stream content before forcing a JSON transformation format
+      const text = await response.text();
+      let data = null;
+      if (text) {
+        try { data = JSON.parse(text); } catch { data = text; }
+      }
 
-      if (data && data.success) {
+      if (response.ok && data && (data.success || response.status === 200)) {
         setToast("success", "File uploaded successfully!");
         e.target.reset();
+
+        // Auto-refresh your local list variables states seamlessly
         if (typeof fetchAdminData === "function") {
           fetchAdminData();
         }
+        if (typeof fetchStudentsData === "function") {
+          fetchStudentsData();
+        }
       } else {
-        setToast("error", data.message || "Upload failed. Please try again.");
+        const serverErrorMsg = typeof data === "string" ? data : data?.message || "Upload rejected by server configuration pipeline.";
+        setToast("error", serverErrorMsg);
       }
     } catch (error) {
-      setToast("error", "Network error: Please check if your backend server is running!");
-      console.error("Upload error:", error);
+      // Provides targeted insight into the specific browser engine crash logs
+      setToast("error", "Network error: Connection refused or file stream parsing failed.");
+      console.error("Upload execution crash trace log:", error);
     } finally {
       setUploadingDoc(false);
     }
@@ -620,6 +640,7 @@ export default function AdminDashboard({ api, setToast }) {
                                 )}
 
                                 {/* Document Box Layout */}
+
                                 <div className="mt-2 p-3 bg-white rounded-xl border border-slate-200 shadow-sm max-w-sm">
                                   <div className="border-b border-slate-100 pb-2 mb-2 flex items-center justify-between">
                                     <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider">Verification Archive</span>
@@ -651,7 +672,7 @@ export default function AdminDashboard({ api, setToast }) {
                                             title={cleanName}
                                           >
                                             <a
-                                              href={`http://localhost:8090/api/v1/documents/view-by-id/${doc.id}?v=${Date.now()}`}
+                                              href={`${API_BASE || "https://hostel-management-system-backend-o16l.onrender.com"}/api/v1/documents/view-by-id/${doc.id}?v=${Date.now()}`}
                                               target="_blank"
                                               rel="noopener noreferrer"
                                               className="flex items-center gap-2 min-w-0 flex-1"
@@ -665,6 +686,7 @@ export default function AdminDashboard({ api, setToast }) {
                                                 <span className="text-[9px] text-slate-400 font-semibold tracking-wide">View File ↗</span>
                                               </div>
                                             </a>
+
                                             <button
                                               type="button"
                                               disabled={deletingDoc === doc.id}
@@ -811,8 +833,8 @@ export default function AdminDashboard({ api, setToast }) {
                                               <div className="w-full flex justify-between items-center gap-1 mt-0.5">
                                                 <span className="font-semibold font-mono text-indigo-600 text-xs">₹{inst.amount}</span>
                                                 <span className={`px-1.5 py-0.5 rounded text-[9px] font-extrabold tracking-wide uppercase shadow-2xs ${inst.status === "PAID"
-                                                    ? "bg-emerald-50 text-emerald-700 border border-emerald-100"
-                                                    : "bg-amber-50 text-amber-600 border border-amber-100"
+                                                  ? "bg-emerald-50 text-emerald-700 border border-emerald-100"
+                                                  : "bg-amber-50 text-amber-600 border border-amber-100"
                                                   }`}>
                                                   {inst.status}
                                                 </span>
