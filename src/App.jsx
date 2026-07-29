@@ -4,7 +4,6 @@ import Layout from "./components/Layout";
 import AdminDashboard from "./components/AdminDashboard";
 import StudentDashboard from "./components/StudentDashboard";
 
-
 export const API_BASE = import.meta.env.VITE_API_BASE_URL 
   || "https://hostel-management-system-backend-o16l.onrender.com";
 
@@ -109,7 +108,7 @@ export default function App() {
     setToast(null);
   }
 
-  // ✅ API helper now uses Render backend URL
+  // API helper uses Render backend URL
   async function api(path, options = {}) {
     const headers = {
       "Content-Type": "application/json",
@@ -165,25 +164,30 @@ export default function App() {
     setToast(null);
 
     try {
+      // 🚀 FIXED: Dynamically matches the exact UI dropdown input object criteria
       const securePayload = {
-        ...registerForm,
-        role: "STUDENT",
-        rollNumber: registerForm.rollNumber
+        username: registerForm.username,
+        password: registerForm.password,
+        fullName: registerForm.fullName,
+        email: registerForm.email,
+        phone: registerForm.phone,
+        role: registerForm.role, 
+        rollNumber: registerForm.role === "STUDENT" ? registerForm.rollNumber : null
       };
-      delete securePayload.adminSecretKey;
 
       await api("/api/auth/register", {
         method: "POST",
         body: JSON.stringify(securePayload),
       });
 
+      // Clear the registration form fields completely
       setRegisterForm(initialRegister);
       setAuthMode("login");
       triggerToast("success", "Profile record established successfully!");
     } catch (error) {
       triggerToast("error", error.message);
     } finally {
-      setBusy(false);
+      setBusy(false); 
     }
   }
 

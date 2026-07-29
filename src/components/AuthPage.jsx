@@ -390,6 +390,9 @@ export default function AuthPage({
                     />
                   </div>
 
+
+                  {/* part 4 */}
+
                   {/* ================= ROLE SELECTION FIELD ================= */}
                   <div>
                     <label
@@ -420,10 +423,7 @@ export default function AuthPage({
                   {/* ================= STUDENT ROLL NUMBER (ONLY FOR STUDENT) ================= */}
                   {registerForm.role === "STUDENT" && (
                     <div>
-                      <label
-                        className={`block text-xs font-bold uppercase tracking-wider mb-1 ${isDark ? "text-slate-400" : "text-slate-600"
-                          }`}
-                      >
+                      <label className={`block text-xs font-bold uppercase tracking-wider mb-1 ${isDark ? "text-slate-400" : "text-slate-600"}`}>
                         Roll Number
                       </label>
                       <input
@@ -435,13 +435,12 @@ export default function AuthPage({
                         onChange={(e) =>
                           setRegisterForm({
                             ...registerForm,
-                            rollNumber: e.target.value,
-                            role: "STUDENT" // 🚀 role stays Student when roll number is entered
+                            rollNumber: e.target.value
                           })
                         }
                         className={`w-full rounded-xl border px-4 py-2 text-sm outline-none transition disabled:opacity-50 ${isDark
-                            ? "border-slate-800 bg-slate-950 text-white focus:border-emerald-500"
-                            : "border-slate-200 bg-white text-slate-900 focus:border-slate-950"
+                          ? "border-slate-800 bg-slate-950 text-white focus:border-emerald-500"
+                          : "border-slate-200 bg-white text-slate-900 focus:border-slate-950"
                           }`}
                       />
                     </div>
