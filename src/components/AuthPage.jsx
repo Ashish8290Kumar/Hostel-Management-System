@@ -9,14 +9,14 @@ export default function AuthPage({
   registerForm,
   setRegisterForm,
   onLogin,
-  busy,
   toast,
   theme,
   toggleTheme,
 }) {
   const isDark = theme === "dark";
-  const [showPassword, setShowPassword] = useState(false);       // login form
-  const [showRegPassword, setShowRegPassword] = useState(false); // register form
+  const [showPassword, setShowPassword] = useState(false);
+  const [showRegPassword, setShowRegPassword] = useState(false);
+  const [busy, setBusy] = useState(false); // ✅ local busy state
 
   // ✅ onRegister function
   async function onRegister(e) {
@@ -29,7 +29,7 @@ export default function AuthPage({
         username: registerForm.username,
         email: registerForm.email,
         password: registerForm.password,
-        phoneNumber: registerForm.phoneNumber, // corrected key
+        phoneNumber: registerForm.phoneNumber, // consistent key
         role: registerForm.role,
         rollNumber: registerForm.role === "STUDENT" ? registerForm.rollNumber : null,
       };
@@ -75,17 +75,11 @@ export default function AuthPage({
         }`}
       >
         {/* Left Side */}
-        <section
-          className={`flex flex-col items-center justify-center p-8 transition-colors duration-300 ${
-            isDark
-              ? "bg-linear-to-br from-slate-900 via-slate-950 to-slate-900"
-              : "bg-linear-to-br from-slate-50 via-slate-100 to-slate-50"
-          }`}
-        >
+        <section className="flex flex-col items-center justify-center p-8">
           <img
             src="/images/hostel-building.jpg"
             alt="Shanti Hostel Building"
-            className="w-full h-80 object-cover rounded-2xl shadow-2xl border border-slate-800 opacity-90 hover:opacity-100 transition-opacity duration-300 mb-6"
+            className="w-full h-80 object-cover rounded-2xl shadow-2xl border border-slate-800 mb-6"
           />
           <h1
             className={`text-3xl font-black tracking-wide ${
@@ -94,20 +88,15 @@ export default function AuthPage({
           >
             Shanti Hostel
           </h1>
-          <p className="text-lg italic text-white-300">Alwar, Rajasthan</p>
-          <p className="text-sm text-amber-200 mt-1">
+          <p className="text-lg italic">Alwar, Rajasthan</p>
+          <p className="text-sm text-amber-600 mt-1">
             Catering to Boys & Girls Accommodation
           </p>
         </section>
 
         {/* Right Side: Auth Forms */}
-        <section
-          className={`flex flex-col justify-center p-8 sm:p-12 z-10 transition-colors duration-300 ${
-            isDark ? "bg-slate-900" : "bg-slate-50"
-          }`}
-        >
+        <section className="flex flex-col justify-center p-8 sm:p-12 z-10">
           <div className="w-full max-w-md mx-auto">
-            {/* Title */}
             <h2
               className={`text-3xl font-black tracking-tight ${
                 isDark ? "text-white" : "text-slate-900"
@@ -117,24 +106,12 @@ export default function AuthPage({
             </h2>
 
             {/* Mode Switch */}
-            <div
-              className={`grid grid-cols-2 rounded-xl p-1 mb-6 border ${
-                isDark
-                  ? "bg-slate-950 border-slate-800"
-                  : "bg-slate-200/60 border-slate-300/40"
-              }`}
-            >
+            <div className="grid grid-cols-2 rounded-xl p-1 mb-6 border">
               <button
                 type="button"
                 onClick={() => setMode("login")}
-                className={`rounded-lg py-2 text-xs font-bold transition-all cursor-pointer ${
-                  mode === "login"
-                    ? isDark
-                      ? "bg-slate-800 text-emerald-400 shadow-sm"
-                      : "bg-white text-slate-950 shadow-sm"
-                    : isDark
-                    ? "text-slate-400 hover:text-slate-200"
-                    : "text-slate-600 hover:text-slate-900"
+                className={`rounded-lg py-2 text-xs font-bold ${
+                  mode === "login" ? "bg-white text-slate-950" : "text-slate-600"
                 }`}
               >
                 Account Login
@@ -142,14 +119,8 @@ export default function AuthPage({
               <button
                 type="button"
                 onClick={() => setMode("register")}
-                className={`rounded-lg py-2 text-xs font-bold transition-all cursor-pointer ${
-                  mode === "register"
-                    ? isDark
-                      ? "bg-slate-800 text-emerald-400 shadow-sm"
-                      : "bg-white text-slate-950 shadow-sm"
-                    : isDark
-                    ? "text-slate-400 hover:text-slate-200"
-                    : "text-slate-600 hover:text-slate-900"
+                className={`rounded-lg py-2 text-xs font-bold ${
+                  mode === "register" ? "bg-white text-slate-950" : "text-slate-600"
                 }`}
               >
                 New Registration
@@ -158,13 +129,7 @@ export default function AuthPage({
 
             {/* Toast */}
             {toast && (
-              <div
-                className={`mb-4 p-3.5 rounded-xl text-xs font-semibold border ${
-                  toast.type === "success"
-                    ? "bg-emerald-950/40 border-emerald-500/30 text-emerald-400"
-                    : "bg-rose-950/40 border-rose-500/30 text-rose-400"
-                }`}
-              >
+              <div className="mb-4 p-3.5 rounded-xl text-xs font-semibold border">
                 {toast.text}
               </div>
             )}
@@ -182,12 +147,8 @@ export default function AuthPage({
                 >
 
 
-                  {/* Registration fields */}
-                  {/* Full Name */}
-                  {/* Username */}
-                  {/* Email */}
-                  {/* Password */}
-                  {/* Phone Number */}
+                  {/* Full Name, Username, Email, Password, Phone Number fields here */}
+
                   {/* Role Selector */}
                   <div>
                     <label className="block text-xs font-bold uppercase mb-1">
